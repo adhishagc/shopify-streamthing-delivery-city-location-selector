@@ -1,0 +1,67 @@
+<script>
+  var select = document.getElementById("mySelect"); 
+  var towns = { 
+'Select location'  :   ['Select location' ,   []],
+'Thalawathugoda':['Thalawathugoda',[0,1,2,3,4,5,6]],
+'Rajagiriya':['Rajagiriya',[0,1,2,3,4,5,6]],
+'HPC':['HPC',[0,1,2,3,4,5,6]],
+'Jawatta':['Jawatta',[0,1,2,4,6]],
+'Nugegoda':['Nugegoda',[0,1,2,3,4,5]],
+'Pagoda':['Pagoda',[1,3,5,6]],
+'Nawala':['Nawala',[1,4]],
+'Staple Street':['Staple Street',[1,4,6]],
+'Union Place':['Union Place',[1,2,5]],
+'Kalubowila':['Kalubowila',[0,1,2,3,5,6]],
+'Koswatta':['Koswatta',[1,6]],
+'Malabe':['Malabe',[2,3,4,5]],
+'Colombo City Center':['Colombo City Center',[2,5]],
+'Park Road':['Park Road',[2,5]],
+'Homagama':['Homagama',[2,4,5]],
+'Himbutana':['Himbutana',[2,5]],
+'Kottawa':['Kottawa',[2,4,5]],
+'Dehiwala':['Dehiwala',[2,3,5]],
+'Rathmalana':['Rathmalana',[2,5]],
+'Moratuwa':['Moratuwa',[2,5]],
+'Base Line Road':['Base Line Road',[2]],
+'Colombo 06':['Colombo 06',[2,5]],
+'Duplication Road':['Duplication Road',[2,5]],
+'Navinna':['Navinna',[0,2,3,4,5,6]],
+'Weliwita':['Weliwita',[2,5]],
+'Kaduwela':['Kaduwela',[2,5]],
+'Borelasgamuwa':['Borelasgamuwa',[2,5]],
+'Pelawatta':['Pelawatta',[2,4,5]],
+'Panadura':['Panadura',[2,5]],
+'Ward Place':['Ward Place',[2,6]],
+'Battaramulla':['Battaramulla',[2,5,6]],
+'Kelaniya':['Kelaniya',[3,6]],
+'Kiribathgoda':['Kiribathgoda',[3]],
+'Wattala':['Wattala',[3,6]],
+'Muthuwel':['Muthuwel',[3,6]],
+'Kandana':['Kandana',[3,6]],
+'Kadawatha':['Kadawatha',[3,6]],
+'Negambo':['Negambo',[3,6]],
+'Gampaha':['Gampaha',[3,6]],
+'Kollupitiya':['Kollupitiya',[2,3,5]],
+'Kegalle':['Kegalle',[4]],
+'Kandy':['Kandy',[4]],
+'Kurunegala':['Kurunegala',[4]],
+'Kohuwala':['Kohuwala',[4]],
+'Bambalapitiya':['Bambalapitiya',[2,5]],
+'Colombo 06':['Colombo 06',[2,5]],
+'Piliyandala':['Piliyandala',[6]]
+		  }
+
+  
+  //Days of the week 
+  var days = [" Sunday", " Monday"," Tuesday"," Wednesday"," Thursday"," Friday"," Saturday"];
+
+  //Loads the dropdown with the cities
+  for(var key in towns){
+    var opt = towns[key][0];
+    var element = document.createElement("option");//Creates the selection option with a city value
+    element.textContent = opt;
+    element.value = towns[key][1];//Includes the option attribute value as the day number value
+    select.appendChild(element);
+  }
+
+</script>

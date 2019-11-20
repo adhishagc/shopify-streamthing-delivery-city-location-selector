@@ -1,0 +1,116 @@
+<div class="row" style="margin-left:0.3%;">
+  <div class="col-md-4">
+    <label>Please select your delivery area</label><br>
+    <select id="mySelect"  onchange="myFunction()">
+      {% include 'cities' %}
+    </select>
+  </div>
+  <div class="col-md-8" style="padding-top:0.8%;color:#f44336;">
+    <span id="demo"><span>
+  </div>
+</div>
+
+<!-- Location selection dropdown -->
+
+<!-- Date selection message -->
+
+
+<script src="https://kit.fontawesome.com/1218232a43.js" crossorigin="anonymous"></script>
+
+{% include 'date-format-convert' %}
+
+<script>
+  var status = 0;
+  var selected_area_value = -1;
+  var icon = "";
+  var temp = [];
+  
+  
+  
+  function myFunction() {
+     //Clear temp array if not empty
+    
+    if(temp.length >0){
+      //alert("Identified");
+      
+      var len = temp.length;
+      for(var i=0;i<len;i++){
+        temp.pop();
+      }
+      
+    }
+  
+  var possible_dates = document.getElementById("mySelect").value.split(",");
+  
+  var possible_dates_string = "";
+    //convert to int
+    for(var i =0; i < possible_dates.length;i++){
+      possible_dates[i] = parseInt(possible_dates[i]);
+      temp.push(parseInt(possible_dates[i]));
+      possible_dates[i] = days[possible_dates[i]];
+      
+    }
+    console.log("temp array :" + temp);
+    
+  document.getElementById("demo").innerHTML = "*Please note that deliveries are made only on " + "<span style='font-weight:700'>" + possible_dates.join() + "</span> for the selected area.";
+//   <i class='fas fa-info-circle'></i>
+  //Clear calendar error if visible
+  document.getElementById("calendar-error").innerHTML = "";
+
+  }
+  
+function checkPossibility(){
+   
+  
+  // Get date from Date picker input field
+  var cont = document.getElementById('streamthing_delivery_date').getElementsByTagName('input')[0].value;
+  //console.log(cont);
+  // convert the selected date to standard date format str
+  var date_t = date_convert(cont);
+  console.log("date : " + date_t);
+  // Create a date object
+  date_t = new Date(date_t.replace(/-/g, "/"));
+  
+  //checkDaysArray(parseInt(date_t.getDay()));
+  	
+  
+
+  for(var i =0; i<temp.length;i++){
+    console.log(temp[i] + " " + date_t.getDay());
+      if(temp[i] == parseInt(date_t.getDay())){
+        //Possible
+        status = 1;
+        console.log("state :" + status);
+        return status;
+      }
+    }
+    
+    status = 0;
+  	console.log("state :" + status);
+  // return status;
+  
+ // console.log(date_t);
+}
+  
+
+  function checkDaysArray(day){
+    alert("Dasdas");
+    for(var i =0; i<temp.length;i++){
+      if(temp[i] == day){
+        //Possible
+        status = 1;
+        console.log(status);
+        //return status;
+      }
+    }
+    
+    status = 0;
+    console.log(status); // change it to status
+    //return status;
+  }
+  
+  function testRun(){
+    alert("Tooo");
+  }
+
+</script>
