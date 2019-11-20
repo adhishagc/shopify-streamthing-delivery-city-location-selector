@@ -1,0 +1,405 @@
+<!-- /templates/cart.liquid -->
+{% comment %}
+
+For info on test orders:
+- General http://docs.shopify.com/manual/your-store/orders/test-orders
+- Shopify Payments - http://docs.shopify.com/manual/more/shopify-payments/testing-shopify-payments
+
+{% endcomment %}
+
+
+{% include 'bold-cart' %}
+{% if cart.item_count > 0 %}
+{% if settings.cart_page_bg_enable %}
+
+<div class="visible-pc-large text-center bg--cover bg--fixed bg--cover-dark js__background bg--cover--no--repeat" data-background="{{ 'cart_banner_new_pc_large.jpg' | asset_url }}">
+  <div class="container bg--cover-content">
+    <h2 class="title--page">{{page_title}}</h2>
+  </div>
+</div>
+<div class="visible-pc text-center bg--cover bg--fixed bg--cover-dark js__background bg--cover--no--repeat" data-background="{{ 'cart_banner_new_pc.jpg' | asset_url }}">
+  <div class="container bg--cover-content">
+    <h2 class="title--page">{{page_title}}</h2>
+  </div>
+</div>
+<div class="visible-ipad text-center bg--cover bg--fixed bg--cover-dark js__background bg--cover--no--repeat" data-background="{{ 'cart_banner_new_ipad.jpg' | asset_url }}">
+  <div class="container bg--cover-content">
+    <h2 class="title--page">{{page_title}}</h2>
+  </div>
+</div>
+<div class="visible-mobile text-center bg--cover bg--fixed bg--cover-dark js__background bg--cover--no--repeat" data-background="{{ 'cart_banner_new_mobile.jpg' | asset_url }}">
+  <div class="container bg--cover-content">
+    <h2 class="title--page">{{page_title}}</h2>
+  </div>
+</div>
+{% endif %}
+<main id="main" class="site-main">
+  <div class="container">
+    {% include 'breadcrumb' %}
+    <div class="row">
+      {% assign displayDeliveryDate = true %}
+      <div class="col-sm-12">
+        <div class="commerce commerce-cart">
+          <form id="cartform" action="/cart" method="post" onsubmit="return validateDate()" class="cart">
+            
+            <table class="shop_table cart">
+              <thead>
+                <tr>
+                  <th class="product-thumbnail">{{ 'cart.label.product' | t }}</th>
+                  <th class="product-name">{{ 'cart.label.name' | t }}</th>
+                  <th class="product-price hidden-xs">{{ 'cart.label.price' | t }}</th>
+                  <th class="product-quantity hidden-xs">{{ 'cart.label.quantity' | t }}</th>
+                  <th class="product-subtotal">{{ 'cart.label.total' | t }}</th>
+                  <th class="product-remove {{ bold_remove_class }}">&nbsp;</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in cart.items %}
+                {% include 'bold-cart-item' with item %}
+                <tr class="cart_item">
+                  <td class="product-thumbnail cart--td--alignments">
+                    <a href="{{item.url}}">
+                      <img width="100" height="100" src="{{ item.image | product_img_url: 'small' }}" alt="{{ item.title }}" />
+                    </a>
+                  </td>
+                  <td class="product-name cart--td--alignments">
+                    <a href="{{ item.url }}">{{ item.title }} <br> {% if item.product.tags contains 'Events' %} {% assign displayDeliveryDate = false %} {% endif %}</a> 
+
+                    {% if item.properties.Note != "" and item.properties.Note != null %}
+                    <label class="product--note--cart hidden-xs" readonly disabled="true">{{ item.properties.Note }}</label>
+                    {% endif %}
+
+                    {{ bold_recurring_desc }}
+                  </td>
+                  <td class="product-price hidden-xs cart--td--alignments">
+                    <span class="amount" id="unit_{% increment counter %}">{{ bold_item_price | money }}</span>
+                  </td>
+                  <td class="product-quantity hidden-xs cart--td--alignments">
+                    <div class="quantity"> 
+                      <!--added  a code snipppet after value to always set the max value of the stock to the item if it's ordered more-->
+                      <!-- Removed max value max="{{item.variant.inventory_quantity}}" as we do not deal with inventory -- Senuri-->
+                      <input type="number" name="updates[]" id="updates_{% increment counter_two %}" value="{{ item.quantity }}" min="0" onfocus="this.oldvalue = this.value;" onkeyup="updateCart(this.id,this.value,this.oldvalue,'{{ item.price }}')">
+                    </div>
+                  </td>
+                  <td class="product-subtotal cart--td--alignments ">
+                    <span class="amount total_amount" id="amount-new_{% increment counter_three %}">{{ bold_item_line_price | money }}</span> 
+                  </td>
+                  <td class="product-remove {{ bold_remove_class }} cart--td--alignments">
+                    <a href="cart/change?line={{ forloop.index }}&amp;quantity=0" class="remove {{ bold_remove_class }}">&times;</a>
+                  </td>
+                </tr>
+                {% endfor %}
+                <tr class="cart_item">
+                  <td class="product-thumbnail">
+                  </td>
+                  <td class="product-name">
+                    {{ 'cart.label.sub_total' | t }}
+                  </td>
+                  <td class="product-price">
+                  </td>
+                  <td class="product-quantity hidden-xs">
+                  </td>
+                  <td class="product-subtotal">
+                    <span id="subtotal" value="{{ bold_cart_total_price }}" class="amount">{{ bold_cart_total_price | money }}</span>
+                  </td>
+                  <td class="product-remove {{ bold_remove_class }}">
+                  </td>
+                </tr>
+              </tbody>
+
+            </table>
+            
+            {{ bold_ro_cart }}
+            {% if displayDeliveryDate %}
+            {% include 'reorder' %}
+            
+<!-- 			<div id="bonken-apps-form-embed-c1593c5f-7219-48dd-b3a6-51448b49a27a"></div>  -->
+            {% endif %}
+            <!--The custom javascript for location selection -->
+		{% include 'date-location-extension' %}
+		
+            
+            <div class="row"  style="margin-left:0.3%;">
+              <div class="col-md-3">
+                
+				<div id="st_delivery" ></div>
+
+              </div>
+              <div class="col-md-9" style="padding-top:3%;color:#f44336;">
+                <span id="calendar-error"><span>
+              </div>
+            </div>
+          
+       
+		
+            <div class="container pc-layout">
+				
+              <div class="row">
+                <div class="col-sm-3 col-md-3 return-cart"> 
+                  <a class="button wc-backward" href="/collections/all">
+                    {{ 'cart.general.return_shop' | t }} </a>
+                </div>
+
+                <div class="col-sm-6 col-md-6">
+                  <a class="button wc-backward clear-cart" style="float:right;" href="/cart/clear">Clear Cart</a>
+                </div>
+
+                <div class="col-sm-3 col-md-3">
+                  
+                  <div id="update-button" class="col-sm-12 col-md-12 pull-right" style="display:none;">
+                    <input type="submit" class="button--common button--main button--hover-dark-main update-cart-new" name="update_cart update" value="{{ 'cart.general.update' | t }}"/>
+                  </div>
+
+                  <div class="col-sm-12 col-md-12 actions pull-right">
+                    <a class="button--common button--main button--hover-dark-main update-cart checkout-cart"  id="checkout--cart--button"  onclick="checkClick()">Checkout</a>    
+                    
+                  </div>
+                  
+                </div>
+                
+              </div>
+            </div>
+
+            <div class="container mobile-layout">
+              <div class = "row">
+                <div style="padding-left: 15px;padding-right: 15px;"> 
+                   <a class="button--common button--main button--hover-dark-main update-cart checkout-cart"  id="checkout--cart--button"  onclick="checkClick()">Checkout</a> 
+                  
+                </div>
+              </div>
+              
+              <script>
+                function checkClick(){
+                  
+                  if(validateDate()){
+                    window.open("https://www.saaraketha.com/cart/checkout","_self");
+                  }
+                }
+              </script>
+              
+              <div class = "row">
+                <div class="col-sm-12"> 
+                  <a class="button wc-backward clear-cart-button" href="/cart/clear">Clear Cart</a>
+                </div>
+              </div>
+              
+              <!--
+              <div class = "row">
+              <div id="update-button" class="col-sm-12 col-md-3 update-cart" style="display:none;"> 
+              <input type="submit" class="button wc-backward align-update" name="update_cart update" value="{{ 'cart.general.update' | t }}"/>
+              </div>
+              </div>
+              -->
+              
+              <div class = "row">
+                <div class="col-sm-12 col-md-3">
+                  <a class="button wc-backward return-cart" href="/collections/all">{{ 'cart.general.return_shop' | t }}</a>
+                </div>
+              </div>
+			
+            </div>  
+            
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</main>
+{% else %}
+{% comment %}
+The cart is empty
+{% endcomment %}
+{% if settings.cart_page_bg_enable %}
+<div class="text-center bg--cover bg--fixed bg--cover-dark js__background" data-background="{{ 'bg_shopping.jpg' | asset_url }}">
+  <div class="container bg--cover-content">
+    <h2 class="title--page">{{page_title}}</h2>
+  </div>
+</div>
+{% endif %}
+<main id="main" class="site-main">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-12 text-center" style="margin-top:100px;">
+        <div class="commerce">
+          <h3 class="cart-empty">
+            {{ 'cart.general.empty' | t }}
+          </h3>
+          <br>
+          <p class="return-to-shop">
+            <a class="button wc-backward" href="/collections/all">
+              {{ 'cart.general.return_shop' | t }}
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+{% endif %}
+
+<script>
+  function validateDate(){
+	//This function validates date when the form is submitted.     
+    checkPossibility();
+     console.log("Boolean status :" + Boolean(parseInt(status)));
+     if(!Boolean(parseInt(status))){
+       document.getElementById("calendar-error").innerHTML = "*Please enter a valid date";
+//        <i class='fas fa-times-circle'></i> 
+     }
+    return Boolean(parseInt(status));
+    //return false;
+   }
+</script>
+
+<script type="text/javascript">
+  
+  
+  $(function() {
+    $('.clear-cart').on('click',function(e){
+      e.preventDefault();
+      var res = confirm ('Are you sure you want to clear the cart?');
+      if(res){
+        $.ajax({
+          type: "POST",
+          url: '/cart/clear.js',
+          success: function(){
+            clearCartAttriubtes();
+          },
+          dataType: 'json'
+        });
+      }  
+    })
+  });
+  
+  function clearCartAttriubtes(){
+    var data = { 'note': '' , attributes : {'packing_specification' : 'MAP Packaging','include_gift_wrapping' : 'No','subscribe_order' : '','recurring_duration_months' : '', 'gift_note' : '', 'streamthing_delivery_date' : 'ssss','cut_off_date' : '','area' : ''}};
+    $.ajax({
+      type: "POST",
+      url: '/cart/update.js',
+      data: data,
+      success: function(){
+        window.location = '/cart';
+      },
+      dataType: 'json'
+    });
+  }
+
+  function updateCart(id,value,oldValue,unitPrice){
+    value = parseInt(value);
+    //Check if value is numeric or not
+    if(!isNaN(value) & value >= 0){
+
+      var quantity = parseInt(value);
+      var unit = parseFloat(unitPrice / 100);
+
+      var id = parseInt(id.split("_")[1]);
+      var amount_id = "amount-new_" + id.toString();
+
+      var new_value = parseFloat(quantity * unit); 
+      var difference = parseFloat((parseInt(value) - parseInt(oldValue)) * unit);
+
+      if(isNaN(new_value)){
+        new_value = 0;
+      }
+
+
+      var decimals = ".00";
+      var sub_decimals = ".00";
+
+      if (new_value % 1 != 0){
+        decimals = "";
+      }
+
+      //jQuery.post('/cart/change.js', { id: id, quantity: quantity });
+      document.getElementById(amount_id).innerHTML= "Rs " + new_value + decimals;
+
+      //Update the total
+      var total = document.getElementById('subtotal').innerText;
+      var str = total.split(" ")[1];
+      var current_total = parseFloat(str.replace(',',''));
+      var newSubTotal = current_total + difference;
+
+      if (newSubTotal % 1 != 0){
+        sub_decimals = "";
+      }
+
+      //Calculate Subtotal
+      var sum = 0;
+      $(".total_amount").each(function() {
+        var value1 = $(this).text();
+        var number = parseFloat(value1.replace(/[^\d\.]/g,'')).toFixed(2);
+        if(!isNaN(number) && number.length != 0) {
+          sum += parseFloat(number);
+        }
+      });
+      //End of Calculate Subtotal
+
+      // document.getElementById('subtotal').innerHTML= "Rs " + newSubTotal + sub_decimals;
+      document.getElementById('subtotal').innerHTML= "Rs " + sum.toFixed(2);
+
+      //When an update is done, make the update button visible
+      document.getElementById('update-button').style.display = "inline";
+      document.getElementById('checkout--cart--button').style.display = "none";
+    }
+
+  }
+
+//   $( document ).ready(function() {
+//     //form validation
+//     $('.checkout-cart').click(function(e) {
+//       if(! $("#streamthing_delivery_date_input").val() && $("#streamthing_delivery_date_input").is(":visible") ){
+//         e.preventDefault();
+//         alert("Please select a delivery area and a delivey date to continue!");
+//       }
+//     });
+//   });
+
+
+
+   
+  
+</script>
+
+<style type="text/css">
+  @media (min-width:1024px) {
+    .update-cart-new{
+      margin-left : 25%;
+    }
+    .clear-cart{
+      margin-right: -14%;
+    }
+  }
+
+  @media (min-width:768px) and (max-width:1023px){
+    .update-cart {
+      margin-left : 0%;
+    }
+    .update-cart-new {
+      margin-left: -14px;
+      padding-left: 20px !important; 
+    }
+  }
+
+
+  @media (min-width: 320px) and (max-width: 760px) {
+
+    .update-cart {
+      width: 100%;
+      text-align: center;
+      margin-bottom: 3%;
+    }
+    
+    .clear-cart-button{
+      width: 100%;
+      text-align: center;
+      margin-bottom: 10px; 
+    }
+  }
+
+  .cart--td--alignments{
+    vertical-align: inherit !important;
+  }
+</style>
+
+
